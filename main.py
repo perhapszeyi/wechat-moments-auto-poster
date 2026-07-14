@@ -656,7 +656,10 @@ class WeChatAutomationGUI:
             with contextlib.redirect_stdout(buf), contextlib.redirect_stderr(buf):
                 spec.loader.exec_module(module)
                 if hasattr(module, "main"):
-                    module.main()
+                    result = module.main()
+                    if result is not True:
+                        self.log(f"脚本 {script_name} 返回失败状态")
+                        return False
                 else:
                     self.log(f"错误：{script_name} 没有 main() 函数")
                     return False

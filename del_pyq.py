@@ -259,24 +259,27 @@ def main():
 
     if not TEMPLATES_DIR.exists():
         logger.error(f"Templates dir not found: {TEMPLATES_DIR}")
-        return
+        return False
 
     if not ensure_wechat_ready():
         logger.error("WeChat is not ready, exiting")
-        return
+        return False
 
     if not open_moments():
         logger.error("Failed to open Moments")
-        return
+        return False
 
     if delete_moment():
         logger.info("Delete completed")
+        return True
     else:
         logger.error("Delete failed")
+        return False
 
 
 if __name__ == "__main__":
     try:
-        main()
+        sys.exit(0 if main() else 1)
     except KeyboardInterrupt:
         logger.info("Stopped by user")
+        sys.exit(130)

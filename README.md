@@ -17,7 +17,7 @@
 
 ```text
 .
-├── test.py
+├── main.py
 ├── pyq_post.py
 ├── pyq_sph_post.py
 ├── del_pyq.py
@@ -72,6 +72,12 @@ templates/privacy/tags/
 
 注意：标签截图通常涉及账号隐私，仓库默认忽略 `templates/privacy/tags/*.png`，只保留 `.gitkeep` 目录占位。
 
+完整模板说明见：
+
+```text
+templates/README.md
+```
+
 ## 本地运行
 
 建议使用 Homebrew Python，避免 pyenv Python 缺少 `_tkinter`。
@@ -82,7 +88,7 @@ cd 项目目录
 source .venv_gui/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
-python test.py
+python main.py
 ```
 
 也可以使用：
@@ -106,7 +112,7 @@ python -m PyInstaller \
   --add-data "del_pyq.py:." \
   --hidden-import cv2 \
   --hidden-import PIL.ImageTk \
-  test.py
+  main.py
 ```
 
 生成位置：
@@ -147,4 +153,3 @@ xattr -cr "微信自动发送朋友圈"
 ## 风险说明
 
 本项目通过截图识别和模拟鼠标键盘操作微信客户端。微信界面变化、窗口大小、显示器缩放、权限设置、模板截图不匹配，都可能导致识别失败。请先使用测试账号验证。
-

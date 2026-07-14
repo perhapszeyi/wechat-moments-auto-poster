@@ -32,4 +32,4 @@ root.destroy()
 PY
 
 # 启动 GUI
-python test.py
+python main.py

@@ -697,12 +697,12 @@ def main():
         TEMPLATES_DIR.mkdir(parents=True)
         logger.info(f"Created templates dir: {TEMPLATES_DIR}")
         logger.info("Please put your screenshot templates there and rerun.")
-        return
+        return False
 
     # 确保微信已打开并登录
     if not ensure_wechat_ready():
         logger.error("WeChat is not ready, exiting")
-        return
+        return False
 
     caption = random.choice(CAPTIONS)
     media_type, media_path = choose_media()
@@ -714,12 +714,15 @@ def main():
 
     if post_moment(caption, media_type, media_path):
         logger.info("Single post completed, exiting")
+        return True
     else:
         logger.error("Post failed")
+        return False
 
 
 if __name__ == "__main__":
     try:
-        main()
+        sys.exit(0 if main() else 1)
     except KeyboardInterrupt:
         logger.info("Stopped by user")
+        sys.exit(130)

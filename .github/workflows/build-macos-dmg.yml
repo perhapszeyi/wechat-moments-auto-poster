@@ -6,6 +6,9 @@ on:
     tags:
       - "v*"
 
+permissions:
+  contents: write
+
 jobs:
   build-macos:
     runs-on: macos-14
@@ -52,7 +55,7 @@ jobs:
             --add-data "del_pyq.py:." \
             --hidden-import cv2 \
             --hidden-import PIL.ImageTk \
-            test.py
+            main.py
 
       - name: Prepare release folder
         run: |
@@ -75,9 +78,43 @@ jobs:
             -format UDZO \
             "微信自动发送朋友圈-mac-arm64.dmg"
 
+      - name: Verify DMG
+        shell: bash
+        run: |
+          set -euo pipefail
+          dmg_path="微信自动发送朋友圈-mac-arm64.dmg"
+          hdiutil verify "$dmg_path"
+
+          attach_output="$(hdiutil attach -nobrowse -readonly "$dmg_path")"
+          echo "$attach_output"
+
+          device="$(echo "$attach_output" | awk '/\/Volumes\// { print $1; exit }')"
+          if [ -z "$device" ]; then
+            echo "Failed to find mounted DMG device"
+            exit 1
+          fi
+
+          hdiutil detach "$device"
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: 微信自动发送朋友圈-mac-arm64
           path: 微信自动发送朋友圈-mac-arm64.dmg
 
+      - name: Publish GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          asset="微信自动发送朋友圈-mac-arm64.dmg"
+
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" "$asset" --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" "$asset" \
+              --title "$GITHUB_REF_NAME" \
+              --generate-notes
+          fi

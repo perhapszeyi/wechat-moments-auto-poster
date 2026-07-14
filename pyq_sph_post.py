@@ -489,33 +489,36 @@ def main():
         TEMPLATES_DIR.mkdir(parents=True)
         logger.info(f"Created templates dir: {TEMPLATES_DIR}")
         logger.info("Please put your screenshot templates there and rerun.")
-        return
+        return False
 
     if not ensure_wechat_ready():
         logger.error("WeChat is not ready, exiting")
-        return
+        return False
 
     # 打开视频号主页
     if not open_channels():
         logger.error("Failed to open Channels")
-        return
+        return False
 
     # 在视频号列表中查找并点击目标视频
     if not find_and_click_target_video():
         logger.error("Failed to find target video")
-        return
+        return False
 
     caption = random.choice(CAPTIONS)
     logger.info(f"Preparing to share with caption: {caption[:20]}...")
 
     if share_video_to_moments(caption):
         logger.info("Share completed")
+        return True
     else:
         logger.error("Share failed")
+        return False
 
 
 if __name__ == "__main__":
     try:
-        main()
+        sys.exit(0 if main() else 1)
     except KeyboardInterrupt:
         logger.info("Stopped by user")
+        sys.exit(130)
