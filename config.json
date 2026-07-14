@@ -1,0 +1,13 @@
+{
+    "captions": [
+        "你好"
+    ],
+    "video_path": "/Users/mac/Desktop/pycode/测试案例/微信朋友圈自动发送/videos/test.MP4",
+    "image_path": "",
+    "mode": "sph",
+    "enable_privacy": true,
+    "enable_auto_del": false,
+    "enable_timer": true,
+    "timer_interval": 1,
+    "timer_unit": "分钟"
+}

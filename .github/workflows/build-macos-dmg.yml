@@ -1,0 +1,83 @@
+name: Build macOS DMG
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build-macos:
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Show runner info
+        run: |
+          uname -m
+          sw_vers
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+          python -m pip install pyinstaller
+
+      - name: Verify Tkinter
+        run: |
+          python - <<'PY'
+          import tkinter as tk
+          root = tk.Tk()
+          root.withdraw()
+          root.destroy()
+          print("tkinter ok", tk.TkVersion)
+          PY
+
+      - name: Build app
+        run: |
+          python -m PyInstaller \
+            -y \
+            --windowed \
+            --name "微信自动发送朋友圈" \
+            --icon app.icns \
+            --add-data "pyq_post.py:." \
+            --add-data "pyq_sph_post.py:." \
+            --add-data "del_pyq.py:." \
+            --hidden-import cv2 \
+            --hidden-import PIL.ImageTk \
+            test.py
+
+      - name: Prepare release folder
+        run: |
+          mkdir -p "release/微信自动发送朋友圈"
+          cp -R "dist/微信自动发送朋友圈.app" "release/微信自动发送朋友圈/"
+          cp -R templates "release/微信自动发送朋友圈/templates"
+          cp config.json "release/微信自动发送朋友圈/config.json"
+          cp 使用说明.txt "release/微信自动发送朋友圈/使用说明.txt"
+
+      - name: Ad-hoc code sign
+        run: |
+          codesign --force --deep --sign - "release/微信自动发送朋友圈/微信自动发送朋友圈.app"
+
+      - name: Create DMG
+        run: |
+          hdiutil create \
+            -volname "微信自动发送朋友圈" \
+            -srcfolder "release/微信自动发送朋友圈" \
+            -ov \
+            -format UDZO \
+            "微信自动发送朋友圈-mac-arm64.dmg"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: 微信自动发送朋友圈-mac-arm64
+          path: 微信自动发送朋友圈-mac-arm64.dmg
+

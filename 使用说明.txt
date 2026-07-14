@@ -1,0 +1,68 @@
+微信自动发送朋友圈 使用说明
+
+一、发布包结构
+
+请保持以下结构，不要只移动 app：
+
+微信自动发送朋友圈/
+├── 微信自动发送朋友圈.app
+├── templates/
+└── config.json
+
+二、首次运行
+
+1. 双击打开 微信自动发送朋友圈.app。
+2. 如果 macOS 提示无法验证开发者，请右键 app 选择“打开”。
+3. 如果仍无法打开，请在终端执行：
+
+   xattr -cr "微信自动发送朋友圈"
+
+4. 打开系统设置，给 app 授权：
+
+   隐私与安全性 -> 辅助功能
+   隐私与安全性 -> 屏幕录制
+   隐私与安全性 -> 自动化
+
+三、模板目录
+
+模板文件放在：
+
+templates/
+
+隐私权限模板放在：
+
+templates/privacy/
+
+标签截图放在：
+
+templates/privacy/tags/
+
+例如：
+
+templates/privacy/tags/1.png
+templates/privacy/tags/2.png
+
+四、常见问题
+
+1. 没有任何反应
+
+通常是没有开启辅助功能或屏幕录制权限。
+
+2. 找不到封面或按钮
+
+通常是模板截图和当前微信界面不一致。请在当前电脑重新截图替换 templates 里的图片。
+
+3. 隐私设置没有执行
+
+请确认 GUI 中已勾选“启用不给谁看隐私设置”，并确认以下文件存在：
+
+templates/privacy/privacy_entry.png
+templates/privacy/hide_from_option.png
+templates/privacy/done_btn.png
+templates/privacy/confirm_btn.png
+templates/privacy/tags/*.png
+
+4. 换电脑后识别失败
+
+不同电脑的微信版本、窗口大小、显示器缩放可能不同。建议在目标电脑重新截取模板。
+

@@ -1,0 +1,19 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+
+.venv*/
+venv/
+env/
+
+build/
+dist/
+*.spec
+*.log
+*.pid
+*.zip
+
+# 用户隐私标签截图不上传，只保留目录结构。
+templates/privacy/tags/*.png
+!templates/privacy/tags/.gitkeep
+
